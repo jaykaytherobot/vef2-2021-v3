@@ -99,6 +99,7 @@ export async function selectPage(page, pageSize = 50) {
     next: true,
     result: [],
     pageCount: 0,
+    numberOfSignatures: 1,
   }
 
   // Find the number of pages in the DB 
@@ -107,6 +108,7 @@ export async function selectPage(page, pageSize = 50) {
     const queryResultCount = await query(qCount);
 
     if (queryResultCount && queryResultCount.rows) {
+      pageInfo.numberOfSignatures = queryResultCount.rows[0].count;
       pageInfo.pageCount = Math.ceil((queryResultCount.rows[0].count)/ pageSize);
     }
   }
@@ -121,6 +123,10 @@ export async function selectPage(page, pageSize = 50) {
   }
   // only on the last page is there not a next page
   pageInfo.next = pageInfo.pageCount !== page;
+  
+  if (pageInfo.numberOfSignatures === '0') {
+    return pageInfo;
+  }
 
   try {
     const q = 'SELECT * FROM signatures ORDER BY id OFFSET $1 LIMIT $2';

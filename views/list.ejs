@@ -1,6 +1,6 @@
 <section class="registrations">
   <h2 class="registrations__title">Undirskriftir</h2>
-
+  <p class="registrations__empty">Fjöldi undirskrifta: <%= registrationPage.numberOfSignatures %></p>
   <% if (registrationPage.result.length === 0) { %>
     <p class="registrations__empty">Engar undirskriftir.</p>
   <% } else { %>
