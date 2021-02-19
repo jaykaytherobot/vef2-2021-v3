@@ -192,6 +192,13 @@ button:hover {
   overflow-wrap: anywhere;
 }
 
+.registrations__navigation {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
 /*
 header {
   margin: 2rem;

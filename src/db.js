@@ -85,7 +85,7 @@ export async function list() {
   return result;
 }
 /**
- * Function that returns a page{bool prev, [] result, bool next} object
+ * Function that returns a page object
  * @param {integer} page Number of the page to fetch from the DB
  */
 export async function selectPage(page, pageSize = 50) {
@@ -93,30 +93,48 @@ export async function selectPage(page, pageSize = 50) {
   if(!Number.isInteger(page) || page < 1) {
     page = 1;
   }
-  const pageObj = {
+  const pageInfo = {
     prev: page !== 1,
+    curr: page,
+    next: true,
     result: [],
-    next: false,
+    pageCount: 0,
   }
+
+  // Find the number of pages in the DB 
+  try {
+    const qCount = 'SELECT COUNT(*) FROM signatures';
+    const queryResultCount = await query(qCount);
+
+    if (queryResultCount && queryResultCount.rows) {
+      pageInfo.pageCount = Math.ceil((queryResultCount.rows[0].count)/ pageSize);
+    }
+  }
+  catch (e) {
+    console.error('Error counting records in the database', e);
+  }
+
+  // if we are accessing a page outside of our range we display the last page
+  if (pageInfo.pageCount < page) {
+    page = pageInfo.pageCount;
+    pageInfo.curr = page;
+  }
+  // only on the last page is there not a next page
+  pageInfo.next = pageInfo.pageCount !== page;
 
   try {
     const q = 'SELECT * FROM signatures ORDER BY id OFFSET $1 LIMIT $2';
-    const queryResult = await query(q, [((page-1)*pageSize) + 1, pageSize + 1]); // tries to get one more record to determine if there is another page
-
+    const queryResult = await query(q, [((page-1)*pageSize), pageSize]); 
+    
     if (queryResult && queryResult.rows) {
-      pageObj.result = queryResult.rows;
+      pageInfo.result = queryResult.rows;
     }
   }
   catch (e) {
     console.error('Error selecting page', e);
   }
 
-  if (pageObj.result.length === pageSize + 1) {
-    pageObj.next = true;
-    pageObj.result.pop();
-  }
-
-  return pageObj;
+  return pageInfo;
 }
 
 // Helper to remove pg from the event loop

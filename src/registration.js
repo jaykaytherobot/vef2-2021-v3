@@ -29,10 +29,9 @@ async function index(req, res) {
   };
 
   const registrationPage = await selectPage(page);
-  let registrations = registrationPage.result;
 
   res.render('index', {
-    errors, formData, registrations,
+    errors, formData, registrationPage,
   });
 }
 
@@ -78,12 +77,11 @@ async function validationCheck(req, res, next) {
     name, nationalId, comment, anonymous,
   };
   const registrationPage = await selectPage(1);
-  let registrations = registrationPage.result;
 
   const validation = validationResult(req);
 
   if (!validation.isEmpty()) {
-    return res.render('index', { formData, errors: validation.errors, registrations });
+    return res.render('index', { formData, errors: validation.errors, registrationPage });
   }
 
   return next();

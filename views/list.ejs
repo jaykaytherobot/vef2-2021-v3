@@ -1,7 +1,7 @@
 <section class="registrations">
   <h2 class="registrations__title">Undirskriftir</h2>
 
-  <% if (registrations.length === 0) { %>
+  <% if (registrationPage.result.length === 0) { %>
     <p class="registrations__empty">Engar undirskriftir.</p>
   <% } else { %>
     <table class="registrations__table" cellpadding="0">
@@ -10,7 +10,7 @@
         <th>Nafn</th>
         <th>Athugasemd</th>
       </tr>
-      <% registrations.forEach((row) => { %>
+      <% registrationPage.result.forEach((row) => { %>
         <tr>
           <td class="date"><%= formatDate(row.signed) %></td>
           <td class="name"><%= row.anonymous ? 'Nafnlaust' : row.name %></td>
@@ -20,4 +20,9 @@
       </tr>
     </table>
   <% } %>
+  <div class="registrations__navigation">
+    <a href="<%= registrationPage.prev ? `/?page=${registrationPage.curr - 1}` : '/' %>">Fyrri síða</a>
+    <p>Síða <%= registrationPage.curr %> af <%= registrationPage.pageCount %></p>
+    <a href="<%= registrationPage.next ? `/?page=${registrationPage.curr + 1}` : `?page=${registrationPage.pageCount}` %>">Næsta síða</a>
+  </div>
 </section>
