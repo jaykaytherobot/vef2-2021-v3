@@ -2,7 +2,7 @@ import express from 'express';
 import { body, validationResult } from 'express-validator';
 import xss from 'xss';
 
-import { selectPage, list, insert } from './db.js';
+import { selectPage, insert } from './db.js';
 
 export const router = express.Router();
 

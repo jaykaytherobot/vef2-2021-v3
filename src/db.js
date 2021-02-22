@@ -8,7 +8,7 @@ const {
   NODE_ENV: nodeEnv = 'development',
 } = process.env;
 
-if(!connectionString) {
+if (!connectionString) {
   console.error('Vantar DATABASE_URL');
   process.exit(1);
 }
@@ -44,7 +44,7 @@ export async function query(_query, values = []) {
  * @returns {Promise<boolean>} Promise, resolved as true if inserted, otherwise false
  */
 export async function insert({
-  name, nationalId, comment, anonymous, 
+  name, nationalId, comment, anonymous,
 } = {}) {
   let success = true;
 
@@ -88,9 +88,10 @@ export async function list() {
  * Function that returns a page object
  * @param {integer} page Number of the page to fetch from the DB
  */
-export async function selectPage(page, pageSize = 50) {
+export async function selectPage(_page, pageSize = 50) {
   // Make sure page is a positive integer.
-  if(!Number.isInteger(page) || page < 1) {
+  let page = _page;
+  if (!Number.isInteger(page) || page < 1) {
     page = 1;
   }
   const pageInfo = {
@@ -100,19 +101,18 @@ export async function selectPage(page, pageSize = 50) {
     result: [],
     pageCount: 0,
     numberOfSignatures: 1,
-  }
+  };
 
-  // Find the number of pages in the DB 
+  // Find the number of pages in the DB
   try {
     const qCount = 'SELECT COUNT(*) FROM signatures';
     const queryResultCount = await query(qCount);
 
     if (queryResultCount && queryResultCount.rows) {
       pageInfo.numberOfSignatures = queryResultCount.rows[0].count;
-      pageInfo.pageCount = Math.ceil((queryResultCount.rows[0].count)/ pageSize);
+      pageInfo.pageCount = Math.ceil((queryResultCount.rows[0].count) / pageSize);
     }
-  }
-  catch (e) {
+  } catch (e) {
     console.error('Error counting records in the database', e);
   }
 
@@ -123,20 +123,19 @@ export async function selectPage(page, pageSize = 50) {
   }
   // only on the last page is there not a next page
   pageInfo.next = pageInfo.pageCount !== page;
-  
+
   if (pageInfo.numberOfSignatures === '0') {
     return pageInfo;
   }
 
   try {
     const q = 'SELECT * FROM signatures ORDER BY signed DESC OFFSET $1 LIMIT $2';
-    const queryResult = await query(q, [((page-1)*pageSize), pageSize]); 
-    
+    const queryResult = await query(q, [((page - 1) * pageSize), pageSize]);
+
     if (queryResult && queryResult.rows) {
       pageInfo.result = queryResult.rows;
     }
-  }
-  catch (e) {
+  } catch (e) {
     console.error('Error selecting page', e);
   }
 
@@ -144,13 +143,10 @@ export async function selectPage(page, pageSize = 50) {
 }
 
 export async function deleteSignatureById(id) {
-  const q = `DELETE FROM signatures WHERE id = $1 RETURNING name`;
+  const q = 'DELETE FROM signatures WHERE id = $1 RETURNING name';
   try {
-    let result = await query(q, [id]);
-    if(result.rowCount > 0) {
-    }
-  }
-  catch (e) {
+    await query(q, [id]);
+  } catch (e) {
     console.error('Error deleteing signature', e);
   }
 }

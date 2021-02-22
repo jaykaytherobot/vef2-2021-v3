@@ -33,9 +33,9 @@
   <% } %>
   <div class="registrations__navigation">
     <% if(admin) { %>   
-      <a href="<%= registrationPage.prev ? `/admin?page=${registrationPage.curr - 1}` : '/' %>">Fyrri síða</a>
+      <a href="<%= registrationPage.prev ? `/admin?page=${registrationPage.curr - 1}` : '/admin' %>">Fyrri síða</a>
       <p>Síða <%= registrationPage.curr %> af <%= registrationPage.pageCount %></p>
-      <a href="<%= registrationPage.next ? `/admin?page=${registrationPage.curr + 1}` : `?page=${registrationPage.pageCount}` %>">Næsta síða</a>  
+      <a href="<%= registrationPage.next ? `/admin?page=${registrationPage.curr + 1}` : `/admin?page=${registrationPage.pageCount}` %>">Næsta síða</a>  
     <% } else { %>   
       <a href="<%= registrationPage.prev ? `/?page=${registrationPage.curr - 1}` : '/' %>">Fyrri síða</a>
       <p>Síða <%= registrationPage.curr %> af <%= registrationPage.pageCount %></p>

@@ -5,11 +5,10 @@ import express from 'express';
 import session from 'express-session';
 import dotenv from 'dotenv';
 
+import { format } from 'date-fns';
 import passport from './login.js';
 import { router as registrationRouter } from './registration.js';
 import { router as adminRouter } from './admin.js';
-
-import { format } from 'date-fns';
 
 dotenv.config();
 
@@ -48,10 +47,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   if (req.isAuthenticated()) {
     // getum núna notað user í viewum
-    res.locals.user = req.user;
+    res.locals.user = await req.user;
   }
 
   next();
@@ -86,9 +85,9 @@ app.locals.formatDate = (str) => {
 
 app.use('/', registrationRouter);
 
-app.get('/login', (req, res, next) => {
+app.get('/login', (req, res) => {
   if (req.isAuthenticated()) {
-    res.redirect('/');
+    return res.redirect('/');
   }
   let message = '';
 
@@ -98,17 +97,17 @@ app.get('/login', (req, res, next) => {
     message = req.session.messages.join(', ');
     req.session.messages = [];
   }
-  res.render('login', { message });
+  return res.render('login', { message });
 });
 
-app.post('/login', 
+app.post('/login',
   passport.authenticate('local', {
     failureMessage: 'Notendanafn eða lykilorð vitlaust',
     failureRedirect: '/login',
   }),
   (req, res) => {
     res.redirect('/admin');
-});
+  });
 
 app.get('/logout', (req, res) => {
   req.logout();

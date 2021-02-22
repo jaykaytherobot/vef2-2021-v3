@@ -23,18 +23,16 @@ router.get('/admin', ensureLoggedIn, async (req, res) => {
 
   const registrationPage = await selectPage(page);
 
-  res.render('admin', {formData, registrationPage});
+  res.render('admin', { formData, registrationPage });
 });
-
 
 router.post('/delete', ensureLoggedIn, async (req, res) => {
   let { id } = req.body;
   id = Number(id);
-  if( !Number.isInteger(id)) {
+  if (!Number.isInteger(id)) {
     id = -1;
-    console.log('not an integer');
   }
   await deleteSignatureById(id);
-  
+
   res.redirect('/admin');
 });

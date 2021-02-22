@@ -1,4 +1,4 @@
-//import { id } from 'date-fns/locale';
+// import { id } from 'date-fns/locale';
 import passport from 'passport';
 import { Strategy } from 'passport-local';
 import { findByUsername, findById, comparePassword } from './users.js';
@@ -19,24 +19,20 @@ passport.use(new Strategy(
       const result = await comparePassword(user, password);
 
       return done(null, result);
-    }
-    catch (e) {
+    } catch (e) {
       console.error(e);
       return done(e);
     }
-  }
+  },
 ));
 
-passport.serializeUser((user, done) => {
-  return done(null, user.id);
-});
+passport.serializeUser((user, done) => done(null, user.id));
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = findById(id);
+    const user = await findById(id);
     return done(null, user);
-  }
-  catch (e) {
+  } catch (e) {
     return done(e);
   }
 });
