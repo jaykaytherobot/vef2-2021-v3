@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url';
 
 import express from 'express';
 import session from 'express-session';
-import { body, validationResult } from 'express-validator';
+import { body } from 'express-validator';
 import dotenv from 'dotenv';
 
 import { format } from 'date-fns';
