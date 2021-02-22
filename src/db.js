@@ -129,7 +129,7 @@ export async function selectPage(page, pageSize = 50) {
   }
 
   try {
-    const q = 'SELECT * FROM signatures ORDER BY id OFFSET $1 LIMIT $2';
+    const q = 'SELECT * FROM signatures ORDER BY signed DESC OFFSET $1 LIMIT $2';
     const queryResult = await query(q, [((page-1)*pageSize), pageSize]); 
     
     if (queryResult && queryResult.rows) {

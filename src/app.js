@@ -9,6 +9,8 @@ import dotenv from 'dotenv';
 import { router as registrationRouter } from './registration.js';
 // import { router as adminRoute } from './admin.js';
 
+import { format } from 'date-fns';
+
 dotenv.config();
 
 const {
@@ -52,12 +54,12 @@ function isInvalid(field, errors = []) {
 app.locals.isInvalid = isInvalid;
 
 app.locals.formatDate = (str) => {
-  let date = '';
+  let date = 'a';
 
   try {
     date = format(str || '', 'dd.MM.yyyy');
   } catch {
-    return '';
+    return 'A';
   }
 
   return date;
