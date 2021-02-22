@@ -1,5 +1,5 @@
 import express from 'express';
-import { selectPage } from './db.js';
+import { selectPage, deleteSignatureById } from './db.js';
 
 export const router = express.Router();
 
@@ -28,6 +28,13 @@ router.get('/admin', ensureLoggedIn, async (req, res) => {
 
 
 router.post('/delete', ensureLoggedIn, async (req, res) => {
-  const { id } = req.body;
-  res.send(`${id}`);
+  let { id } = req.body;
+  id = Number(id);
+  if( !Number.isInteger(id)) {
+    id = -1;
+    console.log('not an integer');
+  }
+  await deleteSignatureById(id);
+  
+  res.redirect('/admin');
 });

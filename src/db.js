@@ -143,6 +143,18 @@ export async function selectPage(page, pageSize = 50) {
   return pageInfo;
 }
 
+export async function deleteSignatureById(id) {
+  const q = `DELETE FROM signatures WHERE id = $1 RETURNING name`;
+  try {
+    let result = await query(q, [id]);
+    if(result.rowCount > 0) {
+    }
+  }
+  catch (e) {
+    console.error('Error deleteing signature', e);
+  }
+}
+
 // Helper to remove pg from the event loop
 export async function end() {
   await pool.end();

@@ -21,8 +21,8 @@
           <% if(admin) { %>
             <td class="eyda">
               <form method="post" action="/delete" enctype="application/x-www-form-urlencoded">
-                <input type="text" name="id" id="id" value="<%= row.id %>">
-                <button>Eyða</button>
+                <input type="hidden" name="id" id="id" value="<%= row.id %>">
+                <button class="button__delete">Eyða</button>
               </form>
             </td>
           <% }%>
@@ -32,8 +32,14 @@
     </table>
   <% } %>
   <div class="registrations__navigation">
-    <a href="<%= registrationPage.prev ? `/?page=${registrationPage.curr - 1}` : '/' %>">Fyrri síða</a>
-    <p>Síða <%= registrationPage.curr %> af <%= registrationPage.pageCount %></p>
-    <a href="<%= registrationPage.next ? `/?page=${registrationPage.curr + 1}` : `?page=${registrationPage.pageCount}` %>">Næsta síða</a>
+    <% if(admin) { %>   
+      <a href="<%= registrationPage.prev ? `/admin?page=${registrationPage.curr - 1}` : '/' %>">Fyrri síða</a>
+      <p>Síða <%= registrationPage.curr %> af <%= registrationPage.pageCount %></p>
+      <a href="<%= registrationPage.next ? `/admin?page=${registrationPage.curr + 1}` : `?page=${registrationPage.pageCount}` %>">Næsta síða</a>  
+    <% } else { %>   
+      <a href="<%= registrationPage.prev ? `/?page=${registrationPage.curr - 1}` : '/' %>">Fyrri síða</a>
+      <p>Síða <%= registrationPage.curr %> af <%= registrationPage.pageCount %></p>
+      <a href="<%= registrationPage.next ? `/?page=${registrationPage.curr + 1}` : `?page=${registrationPage.pageCount}` %>">Næsta síða</a>
+    <% } %>
   </div>
 </section>
