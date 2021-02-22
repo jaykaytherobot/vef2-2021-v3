@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 
 import express from 'express';
 import session from 'express-session';
+import { body, validationResult } from 'express-validator';
 import dotenv from 'dotenv';
 
 import { format } from 'date-fns';
@@ -101,6 +102,11 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login',
+  body('username')
+    .trim()
+    .escape(),
+  body('password')
+    .trim(),
   passport.authenticate('local', {
     failureMessage: 'Notendanafn eða lykilorð vitlaust',
     failureRedirect: '/login',
