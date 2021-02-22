@@ -1,8 +1,20 @@
-<%- include('header') -%>
+<%- include('header', { title: 'Innskráning'}) -%>
 
 <h1>Innskráning</h1>
+<form method="post" action="/login" enctype="application/x-www-form-urlencoded" autocomplete="off" class="form form--separated">
+  <div class="field">
+    <label for="usename">Notendanafn</label>
+    <input type="text" name="username" id="username">
+  </div>
 
+  <div class="field">
+    <label for="password">Lykilorð</label>
+    <input type="password" name="password" id="password">
+  </div>
+  <button>Innskrá</button>
+</form>
 
+<%= message %>
 
 <a href="/">Til baka</a>
 

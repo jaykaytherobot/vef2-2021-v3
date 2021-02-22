@@ -9,12 +9,23 @@
         <th>Dags</th>
         <th>Nafn</th>
         <th>Athugasemd</th>
+        <% if(admin) { %>
+          <th>Eyða</th>
+        <% } %>
       </tr>
       <% registrationPage.result.forEach((row) => { %>
         <tr>
           <td class="date"><%= locals.formatDate(row.signed) %></td>
           <td class="name"><%= row.anonymous ? 'Nafnlaust' : row.name %></td>
           <td class="comment"><%= row.comment %></td>
+          <% if(admin) { %>
+            <td class="eyda">
+              <form method="post" action="/delete" enctype="application/x-www-form-urlencoded">
+                <input type="text" name="id" id="id" value="<%= row.id %>">
+                <button>Eyða</button>
+              </form>
+            </td>
+          <% }%>
         </tr>
       <% }) %>
       </tr>

@@ -1,8 +1,9 @@
-<%- include('header') -%>
+<%- include('header', { title: 'Admin síða'}) -%>
 
 <h1>Undir&shy;skriftar&shy;listi — umsjón</h1>
+<p>Innskráður sem <strong><%= locals.user %></strong></p>
 
 
-<%- include('list') -%>
+<%- include('list', { admin: true }) -%>
 
 <%- include('footer') -%>

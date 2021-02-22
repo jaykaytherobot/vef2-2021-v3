@@ -2,12 +2,12 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 import express from 'express';
-// import session from 'express-session';
+import session from 'express-session';
 import dotenv from 'dotenv';
 
-// import passport from './login.js';
+import passport from './login.js';
 import { router as registrationRouter } from './registration.js';
-// import { router as adminRoute } from './admin.js';
+import { router as adminRouter } from './admin.js';
 
 import { format } from 'date-fns';
 
@@ -38,6 +38,25 @@ app.use(express.static(join(path, '../public')));
 app.set('views', join(path, '../views'));
 app.set('view engine', 'ejs');
 
+app.use(session({
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  maxAge: 20 * 1000, // 20 sek
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use((req, res, next) => {
+  if (req.isAuthenticated()) {
+    // getum núna notað user í viewum
+    res.locals.user = req.user;
+  }
+
+  next();
+});
+
 /**
  * Hjálparfall til að athuga hvort reitur sé gildur eða ekki.
  *
@@ -66,6 +85,37 @@ app.locals.formatDate = (str) => {
 };
 
 app.use('/', registrationRouter);
+
+app.get('/login', (req, res, next) => {
+  if (req.isAuthenticated()) {
+    res.redirect('/');
+  }
+  let message = '';
+
+  // Athugum hvort einhver skilaboð séu til í session, ef svo er birtum þau
+  // og hreinsum skilaboð
+  if (req.session.messages && req.session.messages.length > 0) {
+    message = req.session.messages.join(', ');
+    req.session.messages = [];
+  }
+  res.render('login', { message });
+});
+
+app.post('/login', 
+  passport.authenticate('local', {
+    failureMessage: 'Notendanafn eða lykilorð vitlaust',
+    failureRedirect: '/login',
+  }),
+  (req, res) => {
+    res.redirect('/admin');
+});
+
+app.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/');
+});
+
+app.use('/', adminRouter);
 
 /**
  * Middleware sem sér um 404 villur.
