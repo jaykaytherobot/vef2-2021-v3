@@ -48,6 +48,14 @@ async function setup() {
     signed = getSignDate();
     query('INSERT INTO signatures(name, nationalId, comment, anonymous, signed) VALUES($1, $2, $3, $4, $5)', [name, nationalId, comment, anonymous, signed]);
   }
+
+  await query('DROP TABLE IF EXISTS users');
+  await query(`CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username CHARACTER VARYING(255) NOT NULL,
+    password CHARACTER VARYING(255) NOT NULL
+    );`);
+  await query('INSERT INTO users(username, password) VALUES($1, $2)', ['admin', '$2b$11$zGvlorY4Tco0HcnRasf0ZuDKZS3eqDacQnRgglu.tyhsEnPE5GA42']);
 }
 
 setup();
